@@ -38,11 +38,13 @@ def send_mes(client,message):
     utext = unicode(message,"UTF-8")
     client.post.statuses__update(status=utext)
     print u"works!"
-
+def share_mes(client,message):
+    utext = unicode(message, "UTF-8")
+    client.post.statues_share(status=utext)
 
 if __name__ == '__main__':
     client = init_login()
-    mes = "TEST"
+    mes = "TEST,http://www.sallykang.com"
     send_mes(client,mes)
  
 
