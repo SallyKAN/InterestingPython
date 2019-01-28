@@ -114,6 +114,7 @@ def show_signature(friends):
                           # 设置图片默认的大小,但是如果使用背景图片的话,                                                   # 那么保存的图片大小将会按照其大小保存,margin为词语边缘距离
                           )
     word_frequence = {x[0]: x[1] for x in words_stat.head(100).values}
+    print(word_frequence)
     word_frequence_dict = {}
     for key in word_frequence:
         word_frequence_dict[key] = word_frequence[key]
@@ -132,5 +133,6 @@ def show_signature(friends):
 
 friends,bot = login()
 show_signature(friends)
-bot.file_helper.send_image('output.png')
+# bot.file_helper.send_image('output.png')
+# bot.file_helper.send('https://github.com/SallyKAN/InterestingPython/tree/master/weixin_friends_analysis')
 # print(attr)

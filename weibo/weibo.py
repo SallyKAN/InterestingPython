@@ -86,11 +86,11 @@ def visitWeiboContent(userId):
 
 
 if __name__ == '__main__':
-    username = '491251735@qq.com'  # 输入微博账号
-    password = 'kangjiayuan1119'  # 输入密码
+    username = 'username'  # 输入微博账号
+    password = 'password'  # 输入密码
     loginWeibo(username, password)  # 要先登录，否则抓取不了微博内容
 
     time.sleep(3)
-    uid = '2177457674'  # “寻医问药”的个性域名
+    uid = 'uid'  # “寻医问药”的个性域名
     visitUserInfo(uid)  # 获取用户基本信息
     visitWeiboContent(uid)  # 获取微博内容

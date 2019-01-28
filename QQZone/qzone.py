@@ -171,7 +171,7 @@ def start():
         time.sleep(3)
 
 if __name__ == '__main__':
-    conn = pymysql.connect(host='localhost', user='root', password='19961119',
+    conn = pymysql.connect(host='localhost', user='root', password='password',
                            database='qq_spider', charset="utf8")
     start()
     conn.close()
