@@ -134,9 +134,8 @@ def print_msg(mg):
 #        replyContent = "我收到了一条系统消息"
 #     return replyContent;
 
-
 if __name__ == '__main__':
-    itchat.auto_login(enableCmdQR=2)
+    itchat.auto_login(hotReload=True)
     roomslist = itchat.get_chatrooms()
     # for it in roomslist:
     #     print(it['NickName'])
