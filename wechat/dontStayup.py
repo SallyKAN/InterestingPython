@@ -1,11 +1,13 @@
 import json
 import random
+from random import choice
+
 
 import itchat
 
 # 加载配置信息
 def load_config():
-    f = open("keys.json", encoding='utf-8')
+    f = open("reply.json", encoding='utf-8')
     return json.load(f)
 
 def send(msg, userName):
@@ -19,7 +21,7 @@ def group_msg(msg):
         if msg['Type'] == itchat.content.TEXT:
             for item in keys:
                 if item in msg.text:
-                    return random.sample(reply, 1)
+                    send(choice(reply),msg['FromUserName'])
                     break
             print(msg.text)
         elif msg['Type'] == itchat.content.PICTURE:
@@ -41,8 +43,8 @@ if __name__ == '__main__':
     for user in testUsers:
         user_info = itchat.search_friends(name=user)
         userName = user_info[0]["UserName"]
-        send("hello", userName)
-        send(random.sample(ask, 1),userName)
+        # send("hello", userName)
+        send(choice(ask),userName)
         userNames.append(userName)
     # 运行
     itchat.run(True)
