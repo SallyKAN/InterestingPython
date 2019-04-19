@@ -58,27 +58,34 @@ def group_msg(msg):
     mg.name = msg.actualNickName
     mg.type = msg.user.nickName
     mg.msg = msg.text
-    if user.get_count() >= 5:
-        user.set_name('')
-        user.set_count(0)
 
-    if msg['Type'] == itchat.content.TEXT:
-        for item in keys:
-            if item in mg.msg or user.count > 0:
-                send_reminder(mg)
-                user.set_name(mg.name)
-                count = user.get_count()
-                user.set_count(count + 1)
-                break
-        print_msg(mg)
-    elif msg['Type'] == itchat.content.PICTURE:
-        if user.get_name() == mg.name:
+    if mg.type in groups:
+        if mg.name in userDic.keys():
+            if userDic[mg.name] > 3:
+                del userDic[mg.name]
+        if msg['Type'] == itchat.content.TEXT:
+            for item in keys:
+                # if item in mg.msg or user.count > 0:
+                if item in mg.msg or mg.name in userDic.keys():
+                    send_reminder(mg)
+                    if mg.name not in userDic.keys():
+                        userDic[mg.name] = 1
+                    else:
+                        userDic[mg.name] = userDic[mg.name] + 1
+                    break
+            print_msg(mg)
+        elif msg['Type'] == itchat.content.PICTURE:
+            # if user.get_name() == mg.name:
             msg.download("./img/" + msg.fileName)
             img = '@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', "./img/" + msg['FileName'])
-            print(img)
-            send(img, userName)
-            count = user.get_count()
-            user.set_count(count + 1)
+            # print(img)
+            for userName in userNames:
+                send("发送群名：" + mg.type + "\n" + "发送人：" + mg.name + "\n" + "内容：" + "图片" + "\n", userName)
+                send(img, userName)
+            if mg.name not in userDic.keys():
+                userDic[mg.name] = 1
+            else:
+                userDic[mg.name] = userDic[mg.name] + 1
 
 
 def send(msg, userName):
@@ -95,13 +102,15 @@ def send(msg, userName):
 
 def send_reminder(mg):
     message_info = "发送群名：" + mg.type + "\n" + "发送人：" + mg.name + "\n" + "内容：" + mg.msg + "\n"
-    send(message_info, userName)
+    for userName in userNames:
+        send(message_info, userName)
 
 
 # 打印到的消息
 def print_msg(mg):
     message_info = "发送群名：" + mg.type + "\n" + "发送人：" + mg.name + "\n" + "内容：" + mg.msg + "\n"
     print(message_info)
+
 
 # @itchat.msg_register([TEXT,MAP,CARD,NOTE,SHARING,PICTURE,RECORDING,ATTACHMENT,VIDEO,FRIENDS,SYSTEM])
 # def reply_mseeage(msg):
@@ -141,9 +150,14 @@ if __name__ == '__main__':
     #     print(it['NickName'])
     config = load_config()
     keys = config['keys']
-    user_info = itchat.search_friends(name='LinkedME')
-    userName = user_info[0]["UserName"]
-    user = User('', 0)
+    users = config['Users']
+    groups = config['groups']
+    userNames = []
+    for user in users:
+        user_info = itchat.search_friends(name=user)
+        userName = user_info[0]["UserName"]
+        userNames.append(userName)
+    userDic = {}
     # r = redis.Redis(host='192.168.254.102', port=33424, db=3)
     # 运行
     itchat.run(True)
