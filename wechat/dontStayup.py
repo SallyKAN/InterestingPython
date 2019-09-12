@@ -1,5 +1,4 @@
 import json
-import random
 from random import choice
 
 
@@ -11,23 +10,40 @@ def load_config():
     return json.load(f)
 
 def send(msg, userName):
-    itchat.send_msg(msg, toUserName=userName)
+    itchat.send(msg, toUserName=userName)
+
+# 注册普通消息
+# @itchat.msg_register(itchat.content.TEXT)
+# def friend_msg(msg):
+#     # print(mg.name)
+#     print("发送人："+msg.user.nickName+"  内容："+msg['Text'])
 
 # 关键词回复消息
 @itchat.msg_register([itchat.content.TEXT, itchat.content.PICTURE])
 def group_msg(msg):
-    # mg.msg = msg.text
+    if mg.msg == msg.text:
+        print("发送人：" + str(msg.user.nickName) + "  内容：" + msg['Text'])
+    else:
+        print("发送人：" + str(msg.user.nickName) + "  内容：图片")
     if msg['FromUserName'] in userNames:
         if msg['Type'] == itchat.content.TEXT:
             for item in keys:
                 if item in msg.text:
                     send(choice(reply),msg['FromUserName'])
                     break
+                else:
+                    send(choice(urls),msg['FromUserName'])
             print(msg.text)
         elif msg['Type'] == itchat.content.PICTURE:
             msg.download("./img/" + msg.fileName)
             img = '@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', "./img/" + msg['FileName'])
-            return img
+            send(img,msg['FromUserName'])
+            return "嘻嘻"
+
+def transferText():
+    text = input()
+    itchat.send(str(text), toUserName='filehelper')
+
 
 if __name__ == '__main__':
     itchat.auto_login(hotReload=True)
@@ -39,12 +55,15 @@ if __name__ == '__main__':
     reply = config['replyQ']
     ask = config['ask']
     testUsers = config['testUsers']
+    urls = config['urls']
     userNames = []
-    for user in testUsers:
-        user_info = itchat.search_friends(name=user)
-        userName = user_info[0]["UserName"]
-        # send("hello", userName)
-        send(choice(ask),userName)
-        userNames.append(userName)
+#    for user in testUsers:
+#        user_info = itchat.search_friends(name=user)
+#        userName = user_info[0]["UserName"]
+#        send(choice(ask),userName)
+#        userNames.append(userName)
     # 运行
-    itchat.run(True)
+    itchat.run(blockThread=True)
+#    itchat.run()
+    while(True):
+         transferText()
